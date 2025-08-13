@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .calculator {
+      background: #1e1e2f;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      width: 320px;
+    }
+
+    #display {
+      width: 100%;
+      height: 60px;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      text-align: right;
+      background: #111;
+      color: #0f0;
+      box-shadow: inset 0 0 5px #000;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #555;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.98);
+      background-color: #666;
+    }
+
+    .equals {
+      grid-column: span 4;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: white;
+    }
+
+    .equals:hover {
+      background: linear-gradient(45deg, #0099cc, #005fa3);
+    }
+
+    #clear {
+      background-color: #d9534f;
+    }
+
+    #clear:hover {
+      background-color: #c9302c;
+    }
+
+    button[data-key="/"],
+    button[data-key="*"],
+    button[data-key="-"],
+    button[data-key="+"] {
+      background-color: #6c5ce7;
+    }
+
+    button[data-key="/"]:hover,
+    button[data-key="*"]:hover,
+    button[data-key="-"]:hover,
+    button[data-key="+"]:hover {
+      background-color: #4834d4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎯 Added Heading -->
+  <h1>Calculator</h1>
+
+  <div class="calculator">
+    <input type="text" id="display" readonly />
+    <div class="buttons">
+      <button data-key="7">7</button>
+      <button data-key="8">8</button>
+      <button data-key="9">9</button>
+      <button data-key="/">÷</button>
+
+      <button data-key="4">4</button>
+      <button data-key="5">5</button>
+      <button data-key="6">6</button>
+      <button data-key="*">×</button>
+
+      <button data-key="1">1</button>
+      <button data-key="2">2</button>
+      <button data-key="3">3</button>
+      <button data-key="-">−</button>
+
+      <button data-key="0">0</button>
+      <button data-key=".">.</button>
+      <button id="clear">C</button>
+      <button data-key="+">+</button>
+
+      <button id="equals" class="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('button');
+    const equalsButton = document.getElementById('equals');
+    const clearButton = document.getElementById('clear');
+
+    let expression = "";
+
+    function updateDisplay(value) {
+      display.value = value;
+    }
+
+    function appendToExpression(input) {
+      expression += input;
+      updateDisplay(expression);
+    }
+
+    function evaluateExpression() {
+      try {
+        const result = eval(expression);
+        updateDisplay(result);
+        expression = result.toString();
+      } catch (error) {
+        updateDisplay("Error");
+        expression = "";
+      }
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const key = button.dataset.key;
+        if (key) {
+          appendToExpression(key);
+        }
+      });
+    });
+
+    equalsButton.addEventListener('click', evaluateExpression);
+
+    clearButton.addEventListener('click', () => {
+      expression = "";
+      updateDisplay("");
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const allowedKeys = "0123456789/*-+.()";
+      if (allowedKeys.includes(e.key)) {
+        appendToExpression(e.key);
+      } else if (e.key === "Enter") {
+        evaluateExpression();
+      } else if (e.key === "Backspace") {
+        expression = expression.slice(0, -1);
+        updateDisplay(expression);
+      } else if (e.key.toLowerCase() === "c") {
+        expression = "";
+        updateDisplay("");
+      }
+    });
+  </script>
+</body>
+</html>
